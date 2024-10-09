@@ -12,6 +12,7 @@
   "dependencies": {
     "@xenova/transformers": "^2.17.2",
     "debug": "^4.1.1",
+    "dotenv": "^16.4.5",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-convert": "^1.2.0",

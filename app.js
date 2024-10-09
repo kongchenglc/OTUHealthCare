@@ -1,11 +1,12 @@
 import Koa from 'koa'
-const app = new Koa()
 import views from 'koa-views'
 import json from 'koa-json'
 import onerror from 'koa-onerror'
 import bodyparser from 'koa-bodyparser'
 import logger from 'koa-logger'
 import koaStatic from 'koa-static'
+import dotenv from 'dotenv';
+
 
 import index from './routes/index.js'
 import users from './routes/users.js'
@@ -16,6 +17,10 @@ import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+dotenv.config();
+
+const app = new Koa()
 
 // error handler
 onerror(app)
