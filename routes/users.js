@@ -1,4 +1,5 @@
-const router = require('koa-router')()
+import Router from 'koa-router';  // 注意：直接导入默认导出
+const router = new Router();
 
 router.prefix('/users')
 
@@ -10,4 +11,4 @@ router.get('/bar', function (ctx, next) {
   ctx.body = 'this is a users/bar response'
 })
 
-module.exports = router
+export default router

@@ -1,24 +1,32 @@
-const Koa = require('koa')
+import Koa from 'koa'
 const app = new Koa()
-const views = require('koa-views')
-const json = require('koa-json')
-const onerror = require('koa-onerror')
-const bodyparser = require('koa-bodyparser')
-const logger = require('koa-logger')
+import views from 'koa-views'
+import json from 'koa-json'
+import onerror from 'koa-onerror'
+import bodyparser from 'koa-bodyparser'
+import logger from 'koa-logger'
+import koaStatic from 'koa-static'
 
-const index = require('./routes/index')
-const users = require('./routes/users')
+import index from './routes/index.js'
+import users from './routes/users.js'
+import gpt from './routes/gpt.js'
+
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // error handler
 onerror(app)
 
 // middlewares
 app.use(bodyparser({
-  enableTypes:['json', 'form', 'text']
+  enableTypes: ['json', 'form', 'text']
 }))
 app.use(json())
 app.use(logger())
-app.use(require('koa-static')(__dirname + '/public'))
+app.use(koaStatic(__dirname + '/public'))
 
 app.use(views(__dirname + '/views', {
   extension: 'pug'
@@ -35,10 +43,11 @@ app.use(async (ctx, next) => {
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
+app.use(gpt.routes(), gpt.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)
 });
 
-module.exports = app
+export default app
