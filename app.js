@@ -9,8 +9,7 @@ import dotenv from 'dotenv';
 
 
 import index from './routes/index.js'
-import users from './routes/users.js'
-import gpt from './routes/gpt.js'
+import gptchat from './routes/gptchat.js'
 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -47,8 +46,7 @@ app.use(async (ctx, next) => {
 
 // routes
 app.use(index.routes(), index.allowedMethods())
-app.use(users.routes(), users.allowedMethods())
-app.use(gpt.routes(), gpt.allowedMethods())
+app.use(gptchat.routes(), gptchat.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
