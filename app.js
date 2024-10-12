@@ -5,6 +5,7 @@ import onerror from 'koa-onerror'
 import bodyparser from 'koa-bodyparser'
 import logger from 'koa-logger'
 import koaStatic from 'koa-static'
+import cors from '@koa/cors'
 import dotenv from 'dotenv';
 
 
@@ -30,6 +31,7 @@ app.use(bodyparser({
 }))
 app.use(json())
 app.use(logger())
+app.use(cors());
 app.use(koaStatic(__dirname + '/public'))
 
 app.use(views(__dirname + '/views', {
