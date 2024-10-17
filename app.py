@@ -13,7 +13,7 @@ app.add_middleware(
 )
 
 # 加载Hugging Face对话模型 (如GPT2)
-generator = pipeline('text-generation', model='onnx-community/Llama-3.2-1B-Instruct-q4f16')
+generator = pipeline('text-generation', model='meta-llama/Llama-3.1-8B-Instruct')
 
 @app.post("/chat/")
 async def chat(request: Request):
