@@ -13,7 +13,7 @@ app.add_middleware(
 )
 
 # 加载Hugging Face对话模型 (如GPT2)
-generator = pipeline('text-generation', model='meta-llama/Llama-3.1-8B-Instruct')
+generator = pipeline('text-generation', model='meta-llama/Llama-3.2-1B-Instruct')
 
 @app.post("/chat/")
 async def chat(request: Request):
@@ -23,6 +23,16 @@ async def chat(request: Request):
     # 调用 Hugging Face 模型生成 AI 回复
     response = generator(user_message)[0]['generated_text']
     return {"response": response}
+
+@app.get("/chat/")
+async def chat(message: str):
+    try:
+        # 使用 Hugging Face 模型生成 AI 回复
+        response = generator(message, max_new_tokens=256)[0]['generated_text']
+        return {"response": response}
+    
+    except Exception as e:
+        return {"error": str(e)}
 
 if __name__ == "__main__":
     import uvicorn
