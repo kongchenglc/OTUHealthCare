@@ -32,7 +32,7 @@ async function query(userInput) {
   return result;
 }
 
-router.prefix('/gptchat')
+router.prefix('/chat')
 
 router.get('/', async function (ctx, next) {
   const userInput = ctx.query.message ?? 'hi'
