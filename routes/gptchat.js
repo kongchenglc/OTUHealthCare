@@ -19,11 +19,11 @@ const router = new Router();
 
 const inference = new HfInference("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");
 
-async function query(data) {
+async function query(userInput) {
   let result = ''
   for await (const chunk of inference.chatCompletionStream({
     model: "meta-llama/Llama-3.2-1B-Instruct",
-    messages: [{ role: "user", content: "What is the capital of France?" }],
+    messages: [{ role: "user", content: userInput }],
     max_tokens: 500,
   })) {
     console.log(chunk.choices[0]?.delta)
@@ -35,8 +35,8 @@ async function query(data) {
 router.prefix('/gptchat')
 
 router.get('/', async function (ctx, next) {
-  const userInput = ctx.query.message
-  const response = await query({"inputs": "Can you please let us know more details about your "})
+  const userInput = ctx.query.message ?? 'hi'
+  const response = await query(userInput)
   ctx.body = response
 })
 
