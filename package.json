@@ -28,6 +28,7 @@
     "pug": "^2.0.3"
   },
   "devDependencies": {
+    "pm2": "^5.4.2",
     "nodemon": "^1.19.1"
   }
 }
