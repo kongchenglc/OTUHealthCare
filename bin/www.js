@@ -12,7 +12,7 @@ import http from 'http'
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '80');
+const PORT = normalizePort(process.env.PORT || '80');
 // app.set('port', port);
 
 /**
@@ -25,7 +25,9 @@ var server = http.createServer(app.callback());
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port, '0.0.0.0');
+const IP = '0.0.0.0'
+
+server.listen(PORT, IP);
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -58,9 +60,9 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  var bind = typeof PORT === 'string'
+    ? 'Pipe ' + PORT
+    : 'Port ' + PORT;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -87,4 +89,5 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('demo:server')('Listening on ' + bind);
+  console.log(`Server is running at http://${IP}:${PORT}`)
 }

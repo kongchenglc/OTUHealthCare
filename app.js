@@ -7,9 +7,9 @@ import logger from 'koa-logger'
 import koaStatic from 'koa-static'
 import cors from '@koa/cors'
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 
-
-import index from './routes/index.js'
+import userInfo from './routes/userInfo.js'
 import gptchat from './routes/gptchat.js'
 
 import { fileURLToPath } from 'url';
@@ -19,6 +19,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 dotenv.config();
+
+mongoose.connect(process.env.MONGODB_URI,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => {
+    console.log('MongoDB connect failed!')
+    console.error(err)
+  });
 
 const app = new Koa()
 
@@ -47,7 +58,7 @@ app.use(async (ctx, next) => {
 })
 
 // routes
-app.use(index.routes(), index.allowedMethods())
+app.use(userInfo.routes(), userInfo.allowedMethods())
 app.use(gptchat.routes(), gptchat.allowedMethods())
 
 // error-handling
