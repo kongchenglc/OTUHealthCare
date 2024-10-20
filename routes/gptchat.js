@@ -17,7 +17,7 @@ import { HfInference } from "@huggingface/inference";
 import Router from 'koa-router';
 const router = new Router();
 
-const inference = new HfInference("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");
+const inference = new HfInference(process.env.HF_API_TOKEN);
 
 async function query(userInput) {
   let result = ''
