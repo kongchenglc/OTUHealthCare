@@ -21,22 +21,25 @@ const router = new Router();
 const inference = new HfInference(process.env.HF_API_TOKEN);
 
 async function query(userInput, email) {
+  console.log('email??')
+  console.log(email)
   let result = ''
   const user = await User.findOne({ email });
 
   const userPrompt = `User's question is:
-  ${userInput}.
+  ${userInput}
 
-  Here is the user's information: 
-  ${user?.gender ? 'gender:' + user?.gender : ''};
-  ${user?.age ? 'age:' + user?.age : ''};
-  ${user?.height ? 'height:' + user?.height : ''};
-  ${user?.weight ? 'weight:' + user?.weight : ''};
-  ${user?.bloodPressure?.systolic ? 'bloodPressure(systolic):' + user?.bloodPressure?.systolic : ''};
-  ${user?.bloodPressure?.diastolic ? 'bloodPressure(diastolic):' + user?.bloodPressure?.diastolic : ''};
+  Here is the user's health information: 
+  ${user?.gender ? 'gender: ' + user?.gender + ';' : ''}
+  ${user?.age ? 'age: ' + user?.age + ';' : ''}
+  ${user?.height ? 'height: ' + user?.height + ';' : ''}
+  ${user?.weight ? 'weight: ' + user?.weight + ';' : ''}
+  ${user?.bloodPressure?.systolic ? 'bloodPressure(systolic): ' + user?.bloodPressure?.systolic + ';' : ''}
+  ${user?.bloodPressure?.diastolic ? 'bloodPressure(diastolic): ' + user?.bloodPressure?.diastolic + ';' : ''}
 
-  Based on this information, please provide health advice.`;
-
+  Please provide some health advice.`;
+  console.log('----userPrompt')
+  console.log(userPrompt)
   // Set initial role prompt
   const messages = [
     {
