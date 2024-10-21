@@ -21,15 +21,13 @@ const router = new Router();
 const inference = new HfInference(process.env.HF_API_TOKEN);
 
 async function query(userInput, email) {
-  console.log('email??')
-  console.log(email)
   let result = ''
   const user = await User.findOne({ email });
 
-  const userPrompt = `User's question is:
+  const userPrompt = `The question is:
   ${userInput}
 
-  Here is the user's health information: 
+  If the health information is: 
   ${user?.gender ? 'gender: ' + user?.gender + ';' : ''}
   ${user?.age ? 'age: ' + user?.age + ';' : ''}
   ${user?.height ? 'height: ' + user?.height + ';' : ''}
@@ -38,8 +36,7 @@ async function query(userInput, email) {
   ${user?.bloodPressure?.diastolic ? 'bloodPressure(diastolic): ' + user?.bloodPressure?.diastolic + ';' : ''}
 
   Please provide some health advice.`;
-  console.log('----userPrompt')
-  console.log(userPrompt)
+
   // Set initial role prompt
   const messages = [
     {
@@ -48,7 +45,7 @@ async function query(userInput, email) {
     },
     {
       role: "user",
-      content: userPrompt
+      content: email ? userPrompt : userInput
     }
   ];
   for await (const chunk of inference.chatCompletionStream({
