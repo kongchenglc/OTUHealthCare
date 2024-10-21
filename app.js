@@ -6,7 +6,6 @@ import bodyparser from 'koa-bodyparser'
 import logger from 'koa-logger'
 import koaStatic from 'koa-static'
 import cors from '@koa/cors'
-import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
 import userInfo from './routes/userInfo.js'
@@ -17,8 +16,6 @@ import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-dotenv.config();
 
 mongoose.connect(process.env.MONGODB_URI,
   {

@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import User from '../models/user.js';  // 引入模型
+import User from '../models/user.js';
 
 const router = new Router();
 
