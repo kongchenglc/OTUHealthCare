@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "dotenv -e .env node bin/www",
-    "dev": "dotenv -e .env ./node_modules/.bin/nodemon bin/www",
-    "prd": "dotenv -e .env pm2 start bin/www.js --name 'otu-healthcare-backend'",
+    "start": "dotenv -e .env node bin/index",
+    "dev": "dotenv -e .env ./node_modules/.bin/nodemon bin/index",
+    "prd": "dotenv -e .env pm2 start bin/index.js --name 'otu-healthcare-backend'",
     "test": "dotenv -e .env echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
