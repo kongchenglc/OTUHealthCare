@@ -15,7 +15,6 @@
 
 import { HfInference } from "@huggingface/inference";
 import Router from 'koa-router';
-import { jwtAuth } from '../middleware/auth.js';
 import User from '../models/user.js';
 const router = new Router();
 
@@ -62,7 +61,7 @@ async function query(userInput, email) {
 
 router.prefix('/chat')
 
-router.get('/', jwtAuth, async function (ctx, next) {
+router.get('/', async function (ctx, next) {
   const userInput = ctx.query.message ?? 'hi'
   const userEmail = ctx.query.email ?? ''
   const response = await query(userInput, userEmail)
