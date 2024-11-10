@@ -5,8 +5,6 @@
 ### Base URL
 `/auth`
 
----
-
 ### **POST /auth/register**
 
 #### Description
@@ -35,8 +33,6 @@ Register a new user with email, username, and password.
   "message": "User registered successfully"
 }
 ```
-
----
 
 ### **POST /auth/login**
 
@@ -68,6 +64,8 @@ Authenticate a user and generate a JWT token.
 }
 ```
 
+--- 
+
 ## User API Documentation
 
 ### Base URL
@@ -78,8 +76,6 @@ All endpoints (except `/user/all/`) require JWT token authorization via the `Aut
 ```
 Authorization: Bearer <your-jwt-token>
 ```
-
----
 
 ### **GET /user/all/**
 
@@ -113,8 +109,6 @@ Fetch all users in the system.
 ]
 ```
 
----
-
 ### **GET /user/**
 
 #### Description
@@ -145,8 +139,6 @@ Fetch the current authenticated user's details.
   "createdAt": "2024-01-01T00:00:00Z"
 }
 ```
-
----
 
 ### **PUT /user/**
 
@@ -189,8 +181,6 @@ Update the authenticated user's profile.
 }
 ```
 
----
-
 ### **DELETE /user/**
 
 #### Description
@@ -208,6 +198,8 @@ Delete the authenticated user's profile.
 - **404 Not Found**: If the user does not exist.
 - **500 Internal Server Error**: If there’s an error.
 
+--- 
+
 ## Chat API Documentation
 
 ### Base URL
@@ -218,8 +210,6 @@ The `/chat` route requires JWT token authorization via the `Authorization` heade
 ```
 Authorization: Bearer <your-jwt-token>
 ```
-
----
 
 ### **GET /chat**
 
