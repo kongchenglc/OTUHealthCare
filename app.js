@@ -8,6 +8,7 @@ import koaStatic from 'koa-static'
 import cors from '@koa/cors'
 import mongoose from 'mongoose';
 
+import loginRoutes from './routes/login.js';
 import userInfo from './routes/userInfo.js'
 import gptchat from './routes/gptchat.js'
 
@@ -55,6 +56,7 @@ app.use(async (ctx, next) => {
 })
 
 // routes
+app.use(loginRoutes.routes(), loginRoutes.allowedMethods())
 app.use(userInfo.routes(), userInfo.allowedMethods())
 app.use(gptchat.routes(), gptchat.allowedMethods())
 

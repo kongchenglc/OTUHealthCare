@@ -1,34 +1,14 @@
 import Router from 'koa-router';
+import { jwtAuth } from '../middleware/auth.js';
 import User from '../models/user.js';
 
 const router = new Router();
 
-router.prefix('/users')
+router.prefix('/user')
 // RESTful API
 
-// create
-router.post('/', async (ctx) => {
-  try {
-    // check if used
-    const { email } = ctx.request.body
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      ctx.status = 409; // Conflict
-      ctx.body = { message: 'Email already exists' };
-      return;
-    }
-
-    const user = new User(ctx.request.body);
-    const savedUser = await user.save();
-    ctx.body = savedUser;
-  } catch (err) {
-    ctx.status = 400;
-    ctx.body = { message: 'Failed to create user', error: err.message };
-  }
-});
-
 // get all
-router.get('/', async (ctx) => {
+router.get('/all/', async (ctx) => {
   try {
     const users = await User.find({});
     ctx.body = users;
@@ -38,10 +18,10 @@ router.get('/', async (ctx) => {
   }
 });
 
-router.get('/:email', async (ctx) => {
-  const { email } = ctx.params;
+router.get('/', jwtAuth, async (ctx) => {
+  const { username } = ctx.state.user;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ username });
     if (!user) {
       ctx.status = 404;
       ctx.body = { message: 'User not found' };
@@ -55,10 +35,10 @@ router.get('/:email', async (ctx) => {
 });
 
 // update
-router.put('/:email', async (ctx) => {
-  const { email } = ctx.params;
+router.put('/', jwtAuth, async (ctx) => {
+  const { username } = ctx.state.user;
   try {
-    const user = await User.findOneAndUpdate({ email }, ctx.request.body, { new: true, runValidators: true });
+    const user = await User.findOneAndUpdate({ username }, ctx.request.body, { new: true, runValidators: true });
     if (!user) {
       ctx.status = 404;
       ctx.body = { message: 'User not found' };
@@ -71,10 +51,10 @@ router.put('/:email', async (ctx) => {
   }
 });
 
-router.delete('/:email', async (ctx) => {
-  const { email } = ctx.params;
+router.delete('/', jwtAuth, async (ctx) => {
+  const { username } = ctx.state.user;
   try {
-    const user = await User.findOneAndDelete({ email });
+    const user = await User.findOneAndDelete({ username });
     if (!user) {
       ctx.status = 404;
       ctx.body = { message: 'User not found' };
