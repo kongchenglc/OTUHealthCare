@@ -1,27 +1,37 @@
-// import { pipeline } from '@xenova/transformers';
-// import Router from 'koa-router';
-// const router = new Router();
-
-// router.prefix('/gptchat')
-
-// router.get('/', async function (ctx, next) {
-//   const userInput = ctx.query.message
-//   const model = await pipeline('text-generation', 'Xenova/gpt2');
-//   const response = await model(userInput || 'Input Nothing');
-//   ctx.body = response?.[0]?.generated_text
-// })
-
-// export default router
-
 import { HfInference } from "@huggingface/inference";
 import Router from 'koa-router';
 import User from '../models/user.js';
 const router = new Router();
 
+router.prefix('/chat')
+
 const inference = new HfInference(process.env.HF_API_TOKEN);
 
-async function query(userInput, email) {
-  let result = ''
+async function query(messages, ctx) {
+  ctx.set('Content-Type', 'text/plain; charset=utf-8');
+  ctx.set('Transfer-Encoding', 'chunked');
+
+  ctx.status = 200;
+  ctx.res.writeHead(200, {
+    'Content-Type': 'text/plain; charset=utf-8',
+    'Transfer-Encoding': 'chunked'
+  });
+
+  for await (const chunk of inference.chatCompletionStream({
+    model: "meta-llama/Llama-3.2-1B-Instruct",
+    messages,
+    max_tokens: 500,
+  })) {
+    const content = chunk.choices[0]?.delta?.content || '';
+    if (content) {
+      ctx.res.write(content);
+    }
+  }
+
+  ctx.res.end();
+}
+
+async function messagesGenerate(userInput, email) {
   const user = await User.findOne({ email });
 
   const userPrompt = `The question is:
@@ -49,23 +59,57 @@ async function query(userInput, email) {
     }
   ];
 
-  for await (const chunk of inference.chatCompletionStream({
-    model: "meta-llama/Llama-3.2-1B-Instruct",
-    messages,
-    max_tokens: 500,
-  })) {
-    result += chunk.choices[0]?.delta?.content || ""
-  }
-  return result;
+  return messages
 }
-
-router.prefix('/chat')
 
 router.get('/', async function (ctx, next) {
   const userInput = ctx.query.message ?? 'hi'
-  const userEmail = ctx.query.email ?? ''
-  const response = await query(userInput, userEmail)
-  ctx.body = response
+  const email = ctx.query.email ?? ''
+  const messages = await messagesGenerate(userInput, email)
+  await query(messages, ctx)
+})
+
+
+async function healthLifeMessagesGenerate(email) {
+  const user = await User.findOne({ email });
+
+  const userPrompt = `
+  Based on the following health information:
+  ${user?.gender ? 'Gender: ' + user?.gender + '; ' : ''}
+  ${user?.age ? 'Age: ' + user?.age + '; ' : ''}
+  ${user?.height ? 'Height: ' + user?.height + ' cm; ' : ''}
+  ${user?.weight ? 'Weight: ' + user?.weight + ' kg; ' : ''}
+  ${user?.bloodPressure?.systolic ? 'Blood Pressure (Systolic): ' + user?.bloodPressure?.systolic + ' mmHg; ' : ''}
+  ${user?.bloodPressure?.diastolic ? 'Blood Pressure (Diastolic): ' + user?.bloodPressure?.diastolic + ' mmHg; ' : ''}
+  
+  Please provide a comprehensive health advice in the following format:
+  
+  1. **Dietary Advice**: Provide specific suggestions for a healthy diet tailored to the user. Include recommended foods and any to avoid.
+  
+  2. **Fitness Plan**: Suggest a weekly fitness plan with activities (e.g., cardio, strength training, yoga), duration, and intensity suitable for the user.
+  
+  3. **Daily Routine Advice**: Offer guidance on an ideal daily schedule, including wake-up time, sleep time, work/study intervals, and breaks to improve overall well-being.
+  `;
+
+  // Initial messages for the chat model
+  const messages = [
+    {
+      role: "system",
+      content: `You are a professional virtual doctor at Ontario Tech University (OTU) providing health advice. Your name is OldSix. You should deliver accurate, practical, and personalized recommendations tailored to the user's health information. Format your advice into clear sections as requested.`
+    },
+    {
+      role: "user",
+      content: userPrompt
+    }
+  ];
+
+  return messages;
+}
+
+router.get('/healthlife', async function (ctx, next) {
+  const email = ctx.query.email ?? ''
+  const messages = await healthLifeMessagesGenerate(email)
+  await query(messages, ctx)
 })
 
 export default router
