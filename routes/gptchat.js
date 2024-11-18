@@ -20,7 +20,7 @@ async function query(messages, ctx) {
   for await (const chunk of inference.chatCompletionStream({
     model: "meta-llama/Llama-3.2-1B-Instruct",
     messages,
-    max_tokens: 500,
+    max_tokens: 2048,
   })) {
     const content = chunk.choices[0]?.delta?.content || '';
     if (content) {
@@ -74,7 +74,7 @@ async function healthLifeMessagesGenerate(email) {
   const user = await User.findOne({ email });
 
   const userPrompt = `
-  Based on the following health information:
+  If the health information is: 
   ${user?.gender ? 'Gender: ' + user?.gender + '; ' : ''}
   ${user?.age ? 'Age: ' + user?.age + '; ' : ''}
   ${user?.height ? 'Height: ' + user?.height + ' cm; ' : ''}
@@ -82,7 +82,7 @@ async function healthLifeMessagesGenerate(email) {
   ${user?.bloodPressure?.systolic ? 'Blood Pressure (Systolic): ' + user?.bloodPressure?.systolic + ' mmHg; ' : ''}
   ${user?.bloodPressure?.diastolic ? 'Blood Pressure (Diastolic): ' + user?.bloodPressure?.diastolic + ' mmHg; ' : ''}
   
-  Please provide a comprehensive health advice in the following format:
+  Please provide a health advice in the following format:
   
   1. **Dietary Advice**: Provide specific suggestions for a healthy diet tailored to the user. Include recommended foods and any to avoid.
   
@@ -95,7 +95,7 @@ async function healthLifeMessagesGenerate(email) {
   const messages = [
     {
       role: "system",
-      content: `You are a professional virtual doctor at Ontario Tech University (OTU) providing health advice. Your name is OldSix. You should deliver accurate, practical, and personalized recommendations tailored to the user's health information. Format your advice into clear sections as requested.`
+      content: `You are a virtual doctor. You should deliver accurate, practical, and personalized recommendations tailored to the provided health information. Format your advice into clear sections as requested.`
     },
     {
       role: "user",
