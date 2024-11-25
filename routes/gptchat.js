@@ -18,7 +18,7 @@ async function query(messages, ctx) {
   });
 
   for await (const chunk of inference.chatCompletionStream({
-    model: "meta-llama/Llama-3.2-1B-Instruct",
+    model: "meta-llama/Llama-3.1-8B-Instruct",
     messages,
     max_tokens: 2048,
   })) {
